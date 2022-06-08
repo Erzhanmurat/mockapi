@@ -1,109 +1,102 @@
-import React, {useState} from 'react';
-import Students from "../Students";
-
+import React, {useEffect, useState} from 'react';
+import axios from "axios";
+import Spinner from "../Spinner";
+import AddStudentModal from "../AddStudentModal";
 
 const Homepage = () => {
-  const [people, setPeople] = useState({
-     firstname : "",
-     lastname : "",
-     university : "",
-     phone: "",
-     group: "",
-     year: "",
-     email: ""
-  })
-  const create = (e) => {
-     e.preventDefault()
-     console.log(people)
-     setPeople({
-        firstname : "",
-        lastname : "",
-        university : "",
-        phone: "",
-        group: "",
-        year: "",
-        email: ""
-  })
-  }
-  const handleChange = (e) => {
-     const students = {...people}
-     students[e.target.id] = e.target.value
-     setPeople(students)
-  }
+   const [students, setStudents] = useState([])
+   const [editingUser, setEditingUser] = useState(null)
+   const [openModal, setOpenModal] = useState(false)
+   const [isLoader, setIsLoader] = useState(true)
+   useEffect(() => {
+      axios.get('https://6299eb5d6f8c03a9784cec35.mockapi.io/students')
+        .then((res) => {
+           setStudents(res.data)
+           setIsLoader(false)
+      })
+   })
+   const deleteStudent = async (id) => {
+      await axios.delete(`https://6299eb5d6f8c03a9784cec35.mockapi.io/students/${id}`)
+      const studentsList = students.filter(item => item.id !== id)
+      setStudents(studentsList)
+   }
+   const handleEdit =(student)=>{
+      setEditingUser(student)
+      setOpenModal(true)
+   }
+if (isLoader) {
+   <Spinner />
+}
    return (
      <div>
-        <Students />
-        <div className="text-center mt-6">
-        </div>
-        <div className="max-w-2xl mx-auto bg-white p-16">
-           <form onSubmit={create}>
-              <div className="grid gap-6 mb-6 lg:grid-cols-2">
-                 <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">First
-                       name</label>
-                    <input type="text" id="firstname"
-                           onChange={(e) => handleChange(e)}
-                           value={people.firstname}
-                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="Name" required />
-                 </div>
-                 <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Last name</label>
-                    <input type="text" id="lastname"
-                           onChange={(e) => handleChange(e)}
-                           value={people.lastname}
-                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="Last Name" required />
-                 </div>
-                 <div>
-                    <label htmlFor="university"
-                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">University</label>
-                    <input type="text" id="university"
-                           onChange={(e) => handleChange(e)}
-                           value={people.university}
-                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="Harvard University" required />
-                 </div>
-                 <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Phone
-                       number</label>
-                    <input type="tel" id="phone"
-                           onChange={(e) => handleChange(e)}
-                           value={people.phone}
-                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="+12-345-67-89" required />
-                 </div>
-                 <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Group</label>
-                    <input type="text" id="group"
-                           onChange={(e) => handleChange(e)}
-                           value={people.group}
-                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="NFT-22" required />
-                 </div>
-                 <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Year(level)</label>
-                    <input type="number" id="year"
-                           onChange={(e) => handleChange(e)}
-                           value={people.year}
-                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="" required />
-                 </div>
-              </div>
-              <div className="mb-6">
-                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Email
-                    address</label>
-                 <input type="email" id="email"
-                        onChange={(e) => handleChange(e)}
-                        value={people.email}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="alabai@gmail.com" required />
-              </div>
-              <button type="submit"
-                      onClick={create}
-                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create
-              </button>
-           </form>
+        <div className="table w-full p-2">
+           {
+              openModal &&
+              <AddStudentModal setOpenModal = {setOpenModal} students={students} setStudents={setStudents} editingUser={editingUser} setEditingUser={setEditingUser}/>
+           }
+           <button onClick={() => setOpenModal(true)}
+                   className="mt-10 mb-6 rounded-xl border  py-1 px-4 text-white bg-gray-700 hover:bg-gray-600 hover:text-black text-primary my-6">
+              Add New Student
+           </button>
+           <table className="w-full border">
+              <thead>
+              <tr className="bg-gray-50 border-b">
+                 <th className="p-2 border-r cursor-pointer text-sm font-thin text-gray-500">
+                    <div className="flex items-center justify-center">
+                       ID
+                    </div>
+                 </th>
+                 <th className="p-2 border-r cursor-pointer text-sm font-thin text-gray-500">
+                    <div className="flex items-center justify-center">
+                       Full Name
+                    </div>
+                 </th>
+                 <th className="p-2 border-r cursor-pointer text-sm font-thin text-gray-500">
+                    <div className="flex items-center justify-center">
+                       Year
+                    </div>
+                 </th>
+                 <th className="p-2 border-r cursor-pointer text-sm font-thin text-gray-500">
+                    <div className="flex items-center justify-center">
+                       Group
+                    </div>
+                 </th>
+                 <th className="p-2 border-r cursor-pointer text-sm font-thin text-gray-500">
+                    <div className="flex items-center justify-center">
+                       Phone
+                    </div>
+                 </th>
+                 <th className="p-2 border-r cursor-pointer text-sm font-thin text-gray-500">
+                    <div className="flex items-center justify-center">
+                       Email
+                    </div>
+                 </th>
+                 <th className="p-2 border-r cursor-pointer text-sm font-thin text-gray-500">
+                    <div className="flex items-center justify-center">
+                       Action
+                    </div>
+                 </th>
+              </tr>
+              </thead>
+              <tbody>
+              {
+                 students.map((student) => (
+                   <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
+                      <td className="p-2 border-r">{student.id}</td>
+                      <td className="p-2 border-r">{student.fullName}</td>
+                      <td className="p-2 border-r">{student.year}</td>
+                      <td className="p-2 border-r">{student.group}</td>
+                      <td className="p-2 border-r">{student.phone}</td>
+                      <td className="p-2 border-r">{student.email}</td>
+                      <td>
+                         <button onClick={() => handleEdit(student)} className="bg-blue-500 p-2 text-white hover:shadow-lg text-xs font-thin">Edit</button>
+                         <button onClick={() => deleteStudent(student.id)} className="bg-red-500 p-2 text-white hover:shadow-lg text-xs font-thin">Remove</button>
+                      </td>
+                   </tr>
+                 ))
+              }
+              </tbody>
+           </table>
         </div>
      </div>
    );
