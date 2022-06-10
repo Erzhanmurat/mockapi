@@ -5,7 +5,7 @@ import AddStudentModal from "../AddStudentModal";
 
 const Homepage = () => {
    const [students, setStudents] = useState([])
-   const [editingUser, setEditingUser] = useState(null)
+   const [editingStudent, setEditingStudent] = useState(null)
    const [openModal, setOpenModal] = useState(false)
    const [isLoader, setIsLoader] = useState(true)
    useEffect(() => {
@@ -21,7 +21,7 @@ const Homepage = () => {
       setStudents(studentsList)
    }
    const handleEdit =(student)=>{
-      setEditingUser(student)
+      setEditingStudent(student)
       setOpenModal(true)
    }
 if (isLoader) {
@@ -32,7 +32,7 @@ if (isLoader) {
         <div className="table w-full p-2">
            {
               openModal &&
-              <AddStudentModal setOpenModal = {setOpenModal} students={students} setStudents={setStudents} editingUser={editingUser} setEditingUser={setEditingUser}/>
+              <AddStudentModal setOpenModal = {setOpenModal} students={students} setStudents={setStudents} editingStudent={editingStudent} setEditingStudent={setEditingStudent}/>
            }
            <button onClick={() => setOpenModal(true)}
                    className="mt-10 mb-6 rounded-xl border  py-1 px-4 text-white bg-gray-700 hover:bg-gray-600 hover:text-black text-primary my-6">
