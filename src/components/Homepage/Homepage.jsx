@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
 import Spinner from "../Spinner";
 import AddStudentModal from "../AddStudentModal";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Homepage = () => {
    const [students, setStudents] = useState([])
@@ -19,13 +21,14 @@ const Homepage = () => {
       await axios.delete(`https://6299eb5d6f8c03a9784cec35.mockapi.io/students/${id}`)
       const studentsList = students.filter(item => item.id !== id)
       setStudents(studentsList)
+      toast.warn("Student was deleted");
    }
    const handleEdit =(student)=>{
       setEditingStudent(student)
       setOpenModal(true)
    }
 if (isLoader) {
-   <Spinner />
+  return <Spinner />
 }
    return (
      <div>
@@ -81,7 +84,7 @@ if (isLoader) {
               <tbody>
               {
                  students.map((student) => (
-                   <tr className="bg-gray-100 text-center border-b text-sm text-gray-600">
+                   <tr key={student.id} className="bg-gray-100 text-center border-b text-sm text-gray-600">
                       <td className="p-2 border-r">{student.id}</td>
                       <td className="p-2 border-r">{student.fullName}</td>
                       <td className="p-2 border-r">{student.year}</td>
@@ -98,6 +101,17 @@ if (isLoader) {
               </tbody>
            </table>
         </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
      </div>
    );
 };
